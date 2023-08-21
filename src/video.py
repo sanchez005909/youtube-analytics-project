@@ -1,13 +1,16 @@
 from googleapiclient.discovery import build
 import os
+from src.channel import Channel
 
 
 class Video:
 
+    youtube = Channel.get_service()
+
     def __init__(self, video_id):
         self.video_id = video_id
         video_response = self.get_service().videos().list(part='snippet,statistics,contentDetails,topicDetails',
-                                               id=video_id).execute()
+                                                          id=video_id).execute()
         # print(video_response)
         self.video_title: str = video_response['items'][0]['snippet']['title']
         self.view_count: int = video_response['items'][0]['statistics']['viewCount']
