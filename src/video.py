@@ -4,24 +4,28 @@ from src.channel import Channel
 
 
 class Video:
-
     youtube = Channel.get_service()
 
     def __init__(self, video_id):
-        self.video_id = video_id
-        video_response = self.get_service().videos().list(part='snippet,statistics,contentDetails,topicDetails',
-                                                          id=video_id).execute()
-        # print(video_response)
-        self.video_title: str = video_response['items'][0]['snippet']['title']
-        self.view_count: int = video_response['items'][0]['statistics']['viewCount']
-        self.like_count: int = video_response['items'][0]['statistics']['likeCount']
-        self.comment_count: int = video_response['items'][0]['statistics']['commentCount']
+        try:
+            self.video_id = video_id
+            video_response = self.get_service().videos().list(part='snippet,statistics,contentDetails,topicDetails',
+                                                              id=video_id).execute()
+            # print(video_response)
+            self.title: str = video_response['items'][0]['snippet']['title']
+            self.view_count: int = video_response['items'][0]['statistics']['viewCount']
+            self.like_count: int = video_response['items'][0]['statistics']['likeCount']
+            self.comment_count: int = video_response['items'][0]['statistics']['commentCount']
+
+        except IndexError:
+            self.video_id = video_id
+            self.title, self.view_count, self.like_count, self.comment_count = None, None, None, None
 
     def __str__(self):
-        return f'{self.video_title}'
+        return f'{self.title}'
 
     def __repr__(self):
-        return (f'ID:{self.video_id}, Название: {self.video_title}, {self.view_count} просмотров, '
+        return (f'ID:{self.video_id}, Название: {self.title}, {self.view_count} просмотров, '
                 f'{self.like_count} лайков, {self.comment_count} комментариев')
 
     @classmethod
